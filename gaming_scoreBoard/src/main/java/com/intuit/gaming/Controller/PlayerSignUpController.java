@@ -26,21 +26,21 @@ public class PlayerSignUpController {
     private CustomResponseEntityFactory customResponseEntityFactory;
 
     @PostMapping ("/signUp")
-    public CustomResponseEntity playerSignUp(@RequestBody Player player) {
+    public ResponseEntity playerSignUp(@RequestBody Player player) {
 
         try {
             Player playerToBeCreated = playerService.signUpPlayer(player);
             log.info("Player {} has been registered successfully",playerToBeCreated);
-            return customResponseEntityFactory.getCreatedResponse(playerToBeCreated);
+            return ResponseEntity.status(HttpStatus.CREATED).body(customResponseEntityFactory.getCreatedResponse(playerToBeCreated));
         } catch (PlayerException e) {
             log.error(e.getMessage());
-            return customResponseEntityFactory.getConflictResponse(e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(customResponseEntityFactory.getConflictResponse(e.getMessage()));
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage());
-            return customResponseEntityFactory.getBadRequestResponse(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(customResponseEntityFactory.getBadRequestResponse(e.getMessage()));
         } catch (Exception e) {
             log.error(e.getMessage());
-            return customResponseEntityFactory.getISEResponse();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(customResponseEntityFactory.getISEResponse());
         }
     }
 }

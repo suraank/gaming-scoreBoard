@@ -31,10 +31,6 @@ public class PlayerScore implements Comparable<PlayerScore>{
     @Column(nullable = false)
     private Integer score;
 
-    @Column(nullable = false)
-    private String gameType;
-
-
     @Override
     public int compareTo(PlayerScore o) {
 

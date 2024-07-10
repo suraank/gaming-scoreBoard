@@ -29,17 +29,17 @@ public class ScoreBoardController {
     private CustomResponseEntityFactory customResponseEntityFactory;
 
     @PostMapping("/addScore")
-    public CustomResponseEntity publishScore(@RequestBody PlayerScore score) {
+    public ResponseEntity publishScore(@RequestBody PlayerScore score) {
 
         try {
             scoreBoardService.publishScoreMessageToTopic(score);
-            return customResponseEntityFactory.getSuccessResponse(score);
+            return ResponseEntity.status(HttpStatus.OK).body(customResponseEntityFactory.getSuccessResponse(score));
         } catch (PlayerException e) {
             log.error(e.getMessage());
-            return customResponseEntityFactory.getNotFoundResponse();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(customResponseEntityFactory.getNotFoundResponse(e.getMessage()));
         } catch (Exception e) {
             log.error(e.getMessage());
-            return customResponseEntityFactory.getISEResponse();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(customResponseEntityFactory.getISEResponse());
         }
     }
 

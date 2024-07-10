@@ -32,11 +32,11 @@ public class CustomResponseEntityFactory {
                 .build();
     }
 
-    public CustomResponseEntity getNotFoundResponse() {
+    public CustomResponseEntity getNotFoundResponse(String message) {
         return CustomResponseEntity.builder()
                 .httpStatus(HttpStatus.NOT_FOUND)
                 .data(null)
-                .message(HttpStatus.NOT_FOUND.getReasonPhrase())
+                .message(message)
                 .timestamp(System.currentTimeMillis())
                 .build();
     }

@@ -2,9 +2,7 @@ package com.intuit.gaming.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intuit.gaming.model.entity.Player;
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +17,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestMethodOrder(value = OrderAnnotation.class)
 public class PlayerSignUpControllerTest {
 
     @Autowired
@@ -35,8 +32,31 @@ public class PlayerSignUpControllerTest {
                 .build();
         this.mockMvc.perform(post("/player/signUp").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(player)))
-                .andDo(print()).andExpect(status().isOk())
+                .andDo(print()).andExpect(status().isCreated())
                 .andExpect(jsonPath("$.message").value(HttpStatus.CREATED.getReasonPhrase()));
+    }
+
+    @Test
+    void testNewUserSignup_returnConflictException() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Player player1 = Player.builder()
+                .playerName("Test1")
+                .age(25)
+                .contact("7011567590")
+                .build();
+        this.mockMvc.perform(post("/player/signUp").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(player1)));
+
+        Player player2 = Player.builder()
+                .playerName("Test1")
+                .age(25)
+                .contact("7011567590")
+                .build();
+        this.mockMvc.perform(post("/player/signUp").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(player2)))
+                .andDo(print()).andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message")
+                        .value("Player with same contact details is already registered in the system"));
     }
 
     @Test
@@ -45,9 +65,9 @@ public class PlayerSignUpControllerTest {
         Player player = Player.builder()
                 .age(25)
                 .build();
-        this.mockMvc.perform(post("/api/user").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(post("/player/signUp").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(player)))
-                .andDo(print()).andExpect(status().isOk())
+                .andDo(print()).andExpect(status().is5xxServerError())
                 .andExpect(jsonPath("$.message")
                         .value(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
     }
