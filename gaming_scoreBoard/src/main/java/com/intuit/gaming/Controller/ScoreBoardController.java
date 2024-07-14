@@ -48,8 +48,4 @@ public class ScoreBoardController {
         return scoreBoardService.getTopNScores(top);
     }
 
-    @GetMapping("/getTopFiveScorers")
-    public List<PlayerScoreDto> getTopFiveScorers() {
-        return scoreBoardService.getTopFiveScores();
-    }
 }

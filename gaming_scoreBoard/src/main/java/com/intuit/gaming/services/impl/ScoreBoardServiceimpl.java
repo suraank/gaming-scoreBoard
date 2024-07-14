@@ -32,12 +32,6 @@ public class ScoreBoardServiceimpl implements ScoreBoardService {
 
     @Autowired
     private PlayersScoreProducer playersScoreProducer;
-    @Override
-    public PlayerScore addPlayerScore(PlayerScore score) {
-        playerScoreRepository.save(score);
-        return score;
-    }
-
     Gson gson = new Gson();
     @Override
     public void publishScoreMessageToTopic(PlayerScore score) throws PlayerException {
@@ -80,10 +74,5 @@ public class ScoreBoardServiceimpl implements ScoreBoardService {
             playerScoreDtoList.add(playerScoreDto);
         }
         return playerScoreDtoList;
-    }
-
-    @Override
-    public List<PlayerScoreDto> getTopFiveScores() {
-        return null;
     }
 }
