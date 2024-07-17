@@ -1,6 +1,7 @@
 package com.intuit.gaming.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.intuit.gaming.constants.ErrorMessage;
 import com.intuit.gaming.model.entity.Player;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,7 @@ public class PlayerSignUpControllerTest {
                         .content(objectMapper.writeValueAsString(player2)))
                 .andDo(print()).andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message")
-                        .value("Player with same contact details is already registered in the system"));
+                        .value(ErrorMessage.CONFLICT_EXCEPTION_MESSAGE));
     }
 
     @Test
@@ -67,8 +68,8 @@ public class PlayerSignUpControllerTest {
                 .build();
         this.mockMvc.perform(post("/player/signUp").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(player)))
-                .andDo(print()).andExpect(status().is5xxServerError())
+                .andDo(print()).andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message")
-                        .value(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()));
+                        .value(ErrorMessage.INVALID_INFORMATION_EXCEPTION_MESSAGE));
     }
 }

@@ -15,10 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.PriorityQueue;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -65,6 +62,7 @@ public class ScoreBoardServiceimpl implements ScoreBoardService {
         topNScores.addAll(topScores);
         log.info("Top {} scores are : {}",top, topNScores);
 
+        Collections.sort(topNScores);
         List<PlayerScoreDto> playerScoreDtoList = new ArrayList<>();
         for(PlayerScore score : topNScores) {
             Optional<Player> playerOptional = playerRepository.findById(score.getPlayerId());

@@ -6,6 +6,7 @@ import com.intuit.gaming.model.entity.CustomResponseEntity;
 import com.intuit.gaming.model.entity.Player;
 import com.intuit.gaming.services.PlayerService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class PlayerSignUpController {
         } catch (PlayerException e) {
             log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(customResponseEntityFactory.getConflictResponse(e.getMessage()));
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | BadRequestException e) {
             log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(customResponseEntityFactory.getBadRequestResponse(e.getMessage()));
         } catch (Exception e) {
